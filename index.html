@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<script src="jsQR.js"></script>
+		<script>
+			function onFileUpload(event){
+				if (event && event.target && event.target.files && event.target.files.length > 0){
+					var file = event.target.files[0];
+					
+					// display image and get image info
+					var image = new Image();
+					var src = window.URL.createObjectURL(file);
+					image.src = src;
+					image.onload = function() {
+						var imageInfoWidth = document.getElementById("imageInfoWidth");
+						var imageInfoHeight = document.getElementById("imageInfoHeight");
+						var imageDist = document.getElementById("imageDist");
+						imageInfoWidth.innerHTML = this.width;
+						imageInfoHeight.innerHTML = this.height;
+						imageDist.innerHTML = "";
+						
+						var canvas = document.createElement('canvas');
+						canvas.height = this.height;
+						canvas.width = this.width;
+						var ctx = canvas.getContext('2d');
+						ctx.drawImage(this, 0, 0);
+						var array = ctx.getImageData(0, 0, canvas.width, canvas.height)
+						var qr = jsQR(array.data, canvas.width, canvas.height);
+						imageDist.appendChild(canvas);
+						if (qr && qr.data){
+							var qrData = qr.data;
+							var qrContent = document.getElementById("qrContent");
+							qrContent.innerHTML = qrData;
+						}
+					};
+				}
+			}
+		</script>
+	</head>
+	
+	
+	<body>
+		<form>
+			<input type="file" onchange="onFileUpload(event)" accept="image/*"/>
+			<div>Width:  <span id="imageInfoWidth"></span></div>
+			<div>Height: <span id="imageInfoHeight"></span></div>
+			<div>QR Code Content: <span id="qrContent"></span></div>
+			<div id="imageDist">
+			</div>
+		</form>
+	</body>
+</html>
