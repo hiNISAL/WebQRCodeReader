@@ -20,9 +20,10 @@
 						
 						var canvas = document.createElement('canvas');
 						var factor = 1;
-						if (this.height > 1000 || this.width > 1000){
-							var heightFactor = this.height / 1000;
-							var widthFactor = this.height / 1000;
+						var limit = 500;
+						if (this.height > limit || this.width > limit){
+							var heightFactor = this.height / limit;
+							var widthFactor = this.width / limit;
 							if (heightFactor > widthFactor ){
 								factor= heightFactor ;
 							}else{
@@ -31,13 +32,14 @@
 						}
 						var imageInfoResizedWidth = document.getElementById("imageInfoResizedWidth");
 						var imageInfoResizedHeigth = document.getElementById("imageInfoResizedHeigth");
-						imageInfoResizedWidth.innerHTML = this.width * factor;
-						imageInfoResizedHeigth.innerHTML = this.height * factor;
-						canvas.height = this.height * factor;
-						canvas.width = this.width * factor;
+						debugger;
+						imageInfoResizedWidth.innerHTML = this.width / factor;
+						imageInfoResizedHeigth.innerHTML = this.height / factor;
+						canvas.height = this.height / factor;
+						canvas.width = this.width / factor;
 						var ctx = canvas.getContext('2d');
-						ctx.drawImage(this, 0, 0);
-						var array = ctx.getImageData(0, 0, canvas.width, canvas.height, canvas.width * factor, canvas.height* factor)
+						ctx.drawImage(this, 0, 0, canvas.width , canvas.height);
+						var array = ctx.getImageData(0, 0, canvas.width, canvas.height)
 						var qr = jsQR(array.data, canvas.width, canvas.height);
 						imageDist.appendChild(canvas);
 						if (qr && qr.data){
