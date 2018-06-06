@@ -12,18 +12,32 @@
 					image.src = src;
 					image.onload = function() {
 						var imageInfoWidth = document.getElementById("imageInfoWidth");
-						var imageInfoHeight = document.getElementById("imageInfoHeight");
+						var imageInfoHeigth = document.getElementById("imageInfoHeigth");
 						var imageDist = document.getElementById("imageDist");
 						imageInfoWidth.innerHTML = this.width;
-						imageInfoHeight.innerHTML = this.height;
+						imageInfoHeigth.innerHTML = this.height;
 						imageDist.innerHTML = "";
 						
 						var canvas = document.createElement('canvas');
-						canvas.height = this.height;
-						canvas.width = this.width;
+						var factor = 1;
+						if (this.height > 1000 || this.width > 1000){
+							var heightFactor = this.height / 1000;
+							var widthFactor = this.height / 1000;
+							if (heightFactor > widthFactor ){
+								factor= heightFactor ;
+							}else{
+								factor= widthFactor ;
+							}
+						}
+						var imageInfoResizedWidth = document.getElementById("imageInfoResizedWidth");
+						var imageInfoResizedHeigth = document.getElementById("imageInfoResizedHeigth");
+						imageInfoResizedWidth.innerHTML = this.width * factor;
+						imageInfoResizedHeigth.innerHTML = this.height * factor;
+						canvas.height = this.height * factor;
+						canvas.width = this.width * factor;
 						var ctx = canvas.getContext('2d');
 						ctx.drawImage(this, 0, 0);
-						var array = ctx.getImageData(0, 0, canvas.width, canvas.height)
+						var array = ctx.getImageData(0, 0, canvas.width, canvas.height, canvas.width * factor, canvas.height* factor)
 						var qr = jsQR(array.data, canvas.width, canvas.height);
 						imageDist.appendChild(canvas);
 						if (qr && qr.data){
@@ -42,7 +56,9 @@
 		<form>
 			<input type="file" onchange="onFileUpload(event)" accept="image/*"/>
 			<div>Width:  <span id="imageInfoWidth"></span></div>
-			<div>Height: <span id="imageInfoHeight"></span></div>
+			<div>Heigth: <span id="imageInfoHeigth"></span></div>
+			<div>Resized Width:  <span id="imageInfoResizedWidth"></span></div>
+			<div>Resized Heigth: <span id="imageInfoResizedHeigth"></span></div>
 			<div>QR Code Content: <span id="qrContent"></span></div>
 			<div id="imageDist">
 			</div>
